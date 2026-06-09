@@ -18,7 +18,8 @@ export default function BarRealtime({
       (id) => !prevOrderIds.current.includes(id),
     );
 
-    if (hasNewOrder) {
+    if (hasNewOrder && prevOrderIds.current.length > 0) {
+      // Thêm check để không kêu lúc mới F5 lần đầu
       // 1. Phát âm thanh Ting Ting
       const audio = new Audio(
         "https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=ding-idea-40142.mp3",
@@ -40,7 +41,7 @@ export default function BarRealtime({
     prevOrderIds.current = currentOrderIds;
   }, [currentOrderIds]);
 
-  // Cài đặt đồng hồ tự động F5 ngầm mỗi 5 giây
+  // Cài đặt đồng hồ tự động tải lại ngầm mỗi 5 giây
   useEffect(() => {
     const interval = setInterval(() => {
       router.refresh();
@@ -48,5 +49,5 @@ export default function BarRealtime({
     return () => clearInterval(interval);
   }, [router]);
 
-  return null; // Component này chạy ngầm, không cần hiển thị gì cả
+  return null; // Component này chạy ngầm, không cần hiển thị
 }

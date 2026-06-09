@@ -1,3 +1,4 @@
+import prisma from "@/lib/prisma"; // IMPORT PRISMA ĐỂ LẤY DỮ LIỆU THẬT
 import {
   Bed,
   ChevronDown,
@@ -10,16 +11,23 @@ import {
   Zap,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link"; // Đã thêm import Link
+import Link from "next/link";
 
-export default function Home() {
+// Tái tạo lại trang chủ mỗi 30 giây (ISR) để cập nhật số Box trống mà không làm nặng máy chủ
+export const revalidate = 30;
+
+export default async function Home() {
+  // ĐẾM SỐ BOX ĐANG TRỐNG TỪ DATABASE ĐỂ TẠO HIỆU ỨNG FOMO KHÁCH HÀNG
+  const availableBoxes = await prisma.sleepBox.count({
+    where: { status: "AVAILABLE" },
+  });
+
   return (
     <main className="min-h-screen">
       {/* FLOATING BUTTONS - Chuyển đổi liên tục */}
       <div className="fixed bottom-6 right-4 lg:right-8 flex flex-col gap-3 z-50">
         <a
           href="tel:0912756271"
-          data-track="click_call"
           className="bg-elso-primary text-white p-3.5 rounded-full shadow-xl hover:bg-elso-secondary transition"
         >
           <Phone className="w-5 h-5" />
@@ -27,21 +35,19 @@ export default function Home() {
         <a
           href="https://zalo.me/0912756271"
           target="_blank"
-          data-track="click_zalo"
           className="bg-blue-600 text-white p-3.5 rounded-full shadow-xl hover:bg-blue-700 transition"
         >
           <MessageCircle className="w-5 h-5" />
         </a>
         <a
           href="#location"
-          data-track="click_map"
           className="bg-green-600 text-white p-3.5 rounded-full shadow-xl hover:bg-green-700 transition"
         >
           <MapPin className="w-5 h-5" />
         </a>
       </div>
 
-      {/* SECTION 1 - HERO (Hiển thị ngay USP trong 3s) */}
+      {/* SECTION 1 - HERO */}
       <section className="relative h-[100vh] flex flex-col justify-center px-6 lg:px-20 bg-black">
         <Image
           src="/images/hero-bg.webp"
@@ -69,21 +75,30 @@ export default function Home() {
               cắm điện tại mọi khu vực.
             </p>
           </div>
-          {/* Đã cập nhật nút bấm dẫn vào hệ thống */}
+
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <Link
               href="/menu"
-              data-track="click_hero_menu"
-              className="px-8 py-4 bg-white text-elso-primary text-center font-bold rounded-md hover:bg-gray-100 transition shadow-lg"
+              className="px-8 py-4 bg-white text-elso-primary text-center font-bold rounded-md hover:bg-gray-100 transition shadow-lg flex flex-col items-center justify-center"
             >
               Xem Menu & Đặt món
             </Link>
+
+            {/* NÚT ĐẶT BOX VỚI HIỆU ỨNG FOMO SỐ LƯỢNG TRỐNG */}
             <Link
               href="/booking"
-              data-track="click_hero_sleepbox"
-              className="px-8 py-4 bg-elso-primary text-white text-center font-bold rounded-md hover:bg-elso-secondary transition shadow-lg"
+              className="px-8 py-4 bg-elso-primary text-white text-center font-bold rounded-md hover:bg-elso-secondary transition shadow-lg flex flex-col items-center justify-center relative overflow-hidden group"
             >
-              Đặt Sleep Box ngay
+              <span className="relative z-10">Đặt Sleep Box ngay</span>
+              {availableBoxes > 0 ? (
+                <span className="text-xs text-green-300 font-normal mt-0.5 relative z-10 animate-pulse">
+                  🔥 Chỉ còn {availableBoxes} Box trống
+                </span>
+              ) : (
+                <span className="text-xs text-red-300 font-normal mt-0.5 relative z-10">
+                  ⚠️ Tạm thời hết Box
+                </span>
+              )}
             </Link>
           </div>
         </div>
@@ -133,14 +148,13 @@ export default function Home() {
             Một Nơi Để Tập Trung
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Lắp ảnh thật bằng component Image của Next.js để tối ưu SEO và tốc độ */}
             {[1, 2, 3, 4, 5, 6].map((img) => (
               <div
                 key={img}
                 className="relative h-64 rounded-md overflow-hidden group"
               >
                 <Image
-                  src={`/images/ws-${img}.webp`} /* Đường dẫn ảnh: ws-1.webp, ws-2.webp... */
+                  src={`/images/ws-${img}.webp`}
                   alt={`Góc làm việc yên tĩnh tại El Soñador Đà Lạt - Góc ${img}`}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -156,7 +170,6 @@ export default function Home() {
       <section id="sleepbox" className="py-20 px-6 lg:px-20 bg-[#f4ebe1]">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 items-center">
           <div className="flex-1 w-full h-[450px] relative rounded-md overflow-hidden shadow-lg">
-            {/* Lắp ảnh Sleep Box thật */}
             <Image
               src="/images/sleepbox.webp"
               alt="Bên trong Sleep Box riêng tư tại El Soñador Đà Lạt"
@@ -214,7 +227,7 @@ export default function Home() {
                   <span className="font-bold text-elso-primary">200.000đ</span>
                 </li>
                 <li className="flex justify-between items-center">
-                  <span>✓ Thuê mền lẻ (dành cho khách ngồi ngoài)</span>
+                  <span>✓ Thuê mền lẻ (khách ngồi ngoài)</span>
                   <span className="font-bold text-elso-primary">
                     30.000đ / cái
                   </span>
@@ -222,24 +235,31 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* Đã cập nhật nút bấm dẫn vào hệ thống */}
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
               <Link
                 href="/booking"
-                data-track="click_book_now"
-                className="flex-1 flex justify-center items-center gap-2 px-6 py-4 bg-elso-primary text-white font-bold rounded-md hover:bg-elso-secondary transition shadow-lg"
+                className="flex-1 flex flex-col justify-center items-center px-6 py-4 bg-elso-primary text-white font-bold rounded-md hover:bg-elso-secondary transition shadow-lg relative"
               >
-                <Bed className="w-5 h-5" />
-                Đặt Box Trên Web
+                <div className="flex items-center gap-2">
+                  <Bed className="w-5 h-5" /> Đặt Box Trên Web
+                </div>
+                {/* HIỂN THỊ FOMO */}
+                {availableBoxes > 0 ? (
+                  <span className="text-[11px] text-green-300 font-normal mt-1 animate-pulse">
+                    Còn trống {availableBoxes} Box
+                  </span>
+                ) : (
+                  <span className="text-[11px] text-red-300 font-normal mt-1">
+                    Hết Box tạm thời
+                  </span>
+                )}
               </Link>
               <a
                 href="https://zalo.me/0912756271"
                 target="_blank"
-                data-track="click_book_zalo"
                 className="flex-1 flex justify-center items-center gap-2 px-6 py-4 bg-[#0068FF] text-white font-bold rounded-md hover:bg-blue-700 transition shadow-lg"
               >
-                <MessageCircle className="w-5 h-5" />
-                Cần Tư Vấn Thêm
+                <MessageCircle className="w-5 h-5" /> Cần Tư Vấn Thêm
               </a>
             </div>
           </div>
@@ -331,7 +351,6 @@ export default function Home() {
             <a
               href="https://maps.google.com/?q=El+Soñador+Coffee+Tea+Đà+Lạt"
               target="_blank"
-              data-track="click_open_maps"
               className="mt-4 inline-block px-8 py-3 bg-elso-primary text-white font-bold rounded-md hover:bg-elso-secondary transition"
             >
               Mở Google Maps
@@ -392,7 +411,7 @@ export default function Home() {
                 className="group border border-gray-200 rounded-md bg-[#F8F3EE]/30 [&_summary::-webkit-details-marker]:hidden"
               >
                 <summary className="flex items-center justify-between p-5 font-bold cursor-pointer text-elso-primary">
-                  {faq.q}
+                  {faq.q}{" "}
                   <ChevronDown className="w-5 h-5 transition-transform group-open:rotate-180 flex-shrink-0 ml-4" />
                 </summary>
                 <div className="px-5 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100 pt-4 mt-2 mx-5">

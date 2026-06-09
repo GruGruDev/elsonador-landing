@@ -1,10 +1,14 @@
 import prisma from "@/lib/prisma";
 import { CheckCircle2, Clock, Coffee } from "lucide-react";
 import { revalidatePath } from "next/cache";
-
-// <-- THÊM 2 DÒNG IMPORT NÀY -->
 import { Toaster } from "react-hot-toast";
 import BarRealtime from "./BarRealtime";
+
+// IMPORT HÀM ACTION MỚI (Đã được tích hợp hệ thống Ghi Log)
+import { updateOrderStatus } from "./actions";
+
+// BẮT BUỘC THÊM DÒNG NÀY: Ép trang không lưu Cache, luôn lấy đơn mới nhất
+export const dynamic = "force-dynamic";
 
 export default async function BarDashboard() {
   const activeOrders = await prisma.order.findMany({
@@ -19,22 +23,10 @@ export default async function BarDashboard() {
     orderBy: { createdAt: "asc" },
   });
 
-  async function updateOrderStatus(formData: FormData) {
-    "use server";
-    const orderId = formData.get("orderId") as string;
-    const newStatus = formData.get("newStatus") as string;
-
-    await prisma.order.update({
-      where: { id: orderId },
-      data: { status: newStatus },
-    });
-
-    revalidatePath("/bar");
-  }
+  // HÀM UPDATE CŨ ĐÃ BỊ XÓA (Do đã chuyển sang file actions.ts)
 
   return (
     <main className="min-h-screen bg-gray-100 p-6 lg:p-10 font-sans">
-      {/* <-- THÊM 2 COMPONENT NÀY ĐỂ KÍCH HOẠT ÂM THANH VÀ THÔNG BÁO --> */}
       <Toaster position="top-right" />
       <BarRealtime currentOrderIds={activeOrders.map((o) => o.id)} />
 
@@ -96,7 +88,6 @@ export default async function BarDashboard() {
                       {order.tableNumber}
                     </h3>
 
-                    {/* <-- THÊM HIỂN THỊ GHI CHÚ CHUNG CỦA ĐƠN HÀNG NẾU CÓ --> */}
                     {order.note && (
                       <p className="mt-2 text-sm bg-yellow-100 text-yellow-800 p-2 rounded-md border border-yellow-200">
                         <strong>📌 Note chung:</strong> {order.note}
@@ -129,7 +120,7 @@ export default async function BarDashboard() {
                             <span className="font-bold text-elso-primary mr-2">
                               {item.quantity}x
                             </span>
-                            {item.product.name}
+                            {item.product?.name || "Món đã xóa"}
                           </span>
                         </div>
                         {item.note && (
@@ -144,7 +135,15 @@ export default async function BarDashboard() {
 
                 {/* Nút hành động */}
                 <div className="p-4 bg-gray-50 border-t border-gray-100 mt-auto">
-                  <form action={updateOrderStatus}>
+                  {/* Đã sửa form action gọi đến hàm import từ actions.ts */}
+                  <form
+                    action={async (formData) => {
+                      "use server";
+                      const orderId = formData.get("orderId") as string;
+                      const newStatus = formData.get("newStatus") as string;
+                      await updateOrderStatus(orderId, newStatus);
+                    }}
+                  >
                     <input type="hidden" name="orderId" value={order.id} />
 
                     {order.status === "PENDING" ? (

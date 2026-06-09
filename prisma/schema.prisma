@@ -57,6 +57,9 @@ model Product {
   price       Int
   imageUrl    String?   // Link ảnh của món
   
+  // THÊM DÒNG NÀY ĐỂ QUẢN LÝ TRẠNG THÁI HẾT HÀNG/ĐANG BÁN:
+  isAvailable Boolean   @default(true)
+  
   categoryId  String
   category    Category  @relation(fields: [categoryId], references: [id])
   
@@ -97,4 +100,30 @@ model Customer {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+// Bảng 8: Quản lý Tài khoản & Phân quyền (RBAC)
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique             // Tên đăng nhập (VD: nv_nam, admin)
+  password  String                       // Mật khẩu (Sẽ được mã hóa bảo mật)
+  fullName  String                       // Tên hiển thị (VD: Nguyễn Văn Nam)
+  role      String   @default("WAITER")  // Các quyền: ADMIN, MANAGER, BARISTA, WAITER, CLEANER
+  isActive  Boolean  @default(true)      // Khóa tài khoản nếu nhân viên nghỉ việc
+  
+  logs      SystemLog[]                  // Mối quan hệ: 1 nhân viên tạo ra nhiều log hoạt động
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Bảng 9: Nhật ký Hoạt động (Audit Log)
+model SystemLog {
+  id          String   @id @default(cuid())
+  action      String   // Phân loại hành động (VD: "DELETE_ORDER", "UPDATE_MENU")
+  description String   // Chi tiết (VD: "Trưởng ca A đã xóa đơn #123 trị giá 150.000đ")
+  
+  userId      String   // Mã người thực hiện
+  user        User     @relation(fields: [userId], references: [id])
+  
+  createdAt   DateTime @default(now())
 }
