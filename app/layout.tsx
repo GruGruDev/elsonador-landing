@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -107,6 +108,7 @@ export default function RootLayout({
         className={`${montserrat.className} bg-elso-background text-elso-text antialiased`}
         suppressHydrationWarning
       >
+        <Toaster position="top-center" reverseOrder={false} />
         {children}
       </body>
     </html>

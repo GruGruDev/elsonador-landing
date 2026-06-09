@@ -10,6 +10,7 @@ import {
   Zap,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link"; // Đã thêm import Link
 
 export default function Home() {
   return (
@@ -68,21 +69,22 @@ export default function Home() {
               cắm điện tại mọi khu vực.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <a
-              href="#location"
-              data-track="click_hero_map"
-              className="px-8 py-4 bg-white text-elso-primary text-center font-bold rounded-md hover:bg-gray-100 transition"
+          {/* Đã cập nhật nút bấm dẫn vào hệ thống */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-8">
+            <Link
+              href="/menu"
+              data-track="click_hero_menu"
+              className="px-8 py-4 bg-white text-elso-primary text-center font-bold rounded-md hover:bg-gray-100 transition shadow-lg"
             >
-              Xem đường đi
-            </a>
-            <a
-              href="#sleepbox"
+              Xem Menu & Đặt món
+            </Link>
+            <Link
+              href="/booking"
               data-track="click_hero_sleepbox"
-              className="px-8 py-4 bg-elso-primary text-white text-center font-bold rounded-md hover:bg-elso-secondary transition"
+              className="px-8 py-4 bg-elso-primary text-white text-center font-bold rounded-md hover:bg-elso-secondary transition shadow-lg"
             >
-              Đặt Sleep Box
-            </a>
+              Đặt Sleep Box ngay
+            </Link>
           </div>
         </div>
       </section>
@@ -220,16 +222,16 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* HAI NÚT TÙY CHỌN LIÊN HỆ ĐẶT BOX */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-2">
-              <a
-                href="tel:0912756271"
-                data-track="click_book_call"
+            {/* Đã cập nhật nút bấm dẫn vào hệ thống */}
+            <div className="flex flex-col sm:flex-row gap-4 mt-6">
+              <Link
+                href="/booking"
+                data-track="click_book_now"
                 className="flex-1 flex justify-center items-center gap-2 px-6 py-4 bg-elso-primary text-white font-bold rounded-md hover:bg-elso-secondary transition shadow-lg"
               >
-                <Phone className="w-5 h-5" />
-                Gọi Điện Thoại
-              </a>
+                <Bed className="w-5 h-5" />
+                Đặt Box Trên Web
+              </Link>
               <a
                 href="https://zalo.me/0912756271"
                 target="_blank"
@@ -237,7 +239,7 @@ export default function Home() {
                 className="flex-1 flex justify-center items-center gap-2 px-6 py-4 bg-[#0068FF] text-white font-bold rounded-md hover:bg-blue-700 transition shadow-lg"
               >
                 <MessageCircle className="w-5 h-5" />
-                Chat Zalo
+                Cần Tư Vấn Thêm
               </a>
             </div>
           </div>

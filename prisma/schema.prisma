@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Bảng 1: Danh sách các Sleep Box / Ghế ngồi
+model SleepBox {
+  id          String    @id @default(cuid())
+  name        String    // Ví dụ: "Box 01", "Bàn cửa sổ 02"
+  type        String    // "SINGLE_BOX", "DOUBLE_BOX", "WORKSPACE"
+  status      String    @default("AVAILABLE") // "AVAILABLE" (Trống), "OCCUPIED" (Đang dùng), "CLEANING" (Đang dọn)
+  price       Int       // Giá mặc định (VD: 130000)
+  bookings    Booking[] // Mối quan hệ: 1 box có nhiều lượt booking
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// Bảng 2: Đơn đặt chỗ (Booking)
+model Booking {
+  id          String    @id @default(cuid())
+  customerName String   // Tên khách (giai đoạn đầu chưa bắt đăng nhập thì lấy tên)
+  phone       String    // Số điện thoại Zalo của khách
+  
+  boxId       String
+  box         SleepBox  @relation(fields: [boxId], references: [id])
+  
+  startTime   DateTime  // Thời gian bắt đầu thuê
+  endTime     DateTime  // Thời gian dự kiến trả box
+  
+  totalAmount Int       // Tổng tiền cần thanh toán
+  paymentStat String    @default("PENDING") // "PENDING" (Chờ thanh toán), "PAID" (Đã cọc/thanh toán), "CANCELLED"
+  
+  bookingCode String    @unique // Mã đặt chỗ (E-ticket VD: ELSO-8273)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+// --- GIAI ĐOẠN 2: SMART MENU & ORDER ---
+
+// Bảng 3: Danh mục Menu (VD: Cà phê, Trà, Ăn vặt)
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  products    Product[]
+}
+
+// Bảng 4: Sản phẩm (Món nước/Bánh)
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  price       Int
+  imageUrl    String?   // Link ảnh của món
+  
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  
+  orderItems  OrderItem[]
+}
+
+// Bảng 5: Đơn Order của khách
+model Order {
+  id          String    @id @default(cuid())
+  tableNumber String    // Tên Box hoặc Số bàn khách đang ngồi (VD: "Box 01")
+  note        String?
+  status      String    @default("PENDING") // PENDING (Chờ làm), PREPARING (Đang pha), COMPLETED (Đã giao)
+  totalAmount Int
+  
+  items       OrderItem[]
+  createdAt   DateTime  @default(now())
+}
+
+// Bảng 6: Chi tiết từng món trong một Đơn Order
+model OrderItem {
+  id          String    @id @default(cuid())
+  quantity    Int
+  price       Int       
+  note        String?   // <--- THÊM DÒNG NÀY (Ghi chú từng món)
+  
+  orderId     String
+  order       Order     @relation(fields: [orderId], references: [id])
+  
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id])
+}
+// Bảng 7: Khách hàng thành viên
+model Customer {
+  id        String   @id @default(cuid())
+  phone     String   @unique   // Số điện thoại là định danh duy nhất
+  name      String?            // Tên khách (có thể cập nhật sau)
+  points    Int      @default(0) // Điểm tích lũy (VD: 10k = 1 điểm)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
