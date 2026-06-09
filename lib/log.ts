@@ -12,7 +12,8 @@ export async function createLog(action: string, description: string) {
 
     // 1. THỬ QUÉT XEM CÓ PHẢI NHÂN VIÊN ĐANG LÀM KHÔNG ( STAFF MODE )
     try {
-      const sessionCookie = cookies().get("session")?.value;
+      const cookieStore = await cookies();
+      const sessionCookie = cookieStore.get("session")?.value;
       if (sessionCookie) {
         // Tự giải mã token trực tiếp không cần nhờ auth.ts
         const { payload } = await jwtVerify(sessionCookie, secretKey, {

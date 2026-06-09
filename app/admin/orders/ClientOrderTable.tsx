@@ -57,7 +57,7 @@ export default function ClientOrderTable({ orders }: { orders: any[] }) {
           toast.success("Đã xóa đơn hàng!");
           setViewingOrder(null);
         } else {
-          toast.error(result.error);
+          toast.error(result.error || "Không thể xóa đơn hàng này!");
         }
       });
     }

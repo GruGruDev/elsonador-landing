@@ -67,7 +67,7 @@ export default function ClientTableManager({ boxes }: { boxes: any[] }) {
       if (res.success) {
         toast.success("Mở Box thành công!");
         setOpeningBox(null);
-      } else toast.error(res.error);
+      } else toast.error(res.error || "Có lỗi xảy ra");
     });
   };
 
@@ -77,7 +77,7 @@ export default function ClientTableManager({ boxes }: { boxes: any[] }) {
       if (res.success) {
         toast.success("Đã thanh toán xong!");
         setCheckoutBox(null);
-      } else toast.error(res.error);
+      } else toast.error(res.error || "Có lỗi xảy ra");
     });
   };
 
@@ -85,7 +85,7 @@ export default function ClientTableManager({ boxes }: { boxes: any[] }) {
     startTransition(async () => {
       const res = await finishCleaning(boxId);
       if (res.success) toast.success("Sẵn sàng đón khách mới!");
-      else toast.error(res.error);
+      else toast.error(res.error || "Có lỗi xảy ra");
     });
   };
 
@@ -99,7 +99,7 @@ export default function ClientTableManager({ boxes }: { boxes: any[] }) {
             ? "Đã mở lại Box!"
             : "Đã khóa Box để bảo trì!",
         );
-      } else toast.error(res.error);
+      } else toast.error(res.error || "Có lỗi xảy ra");
     });
   };
 
@@ -112,7 +112,7 @@ export default function ClientTableManager({ boxes }: { boxes: any[] }) {
       if (res.success) {
         toast.success("Đã thêm Box mới!");
         setIsAddingBox(false);
-      } else toast.error(res.error);
+      } else toast.error(res.error || "Có lỗi xảy ra");
     });
   };
 
@@ -124,7 +124,7 @@ export default function ClientTableManager({ boxes }: { boxes: any[] }) {
       if (res.success) {
         toast.success("Cập nhật thành công!");
         setEditingBox(null);
-      } else toast.error(res.error);
+      } else toast.error(res.error || "Có lỗi xảy ra");
     });
   };
 
@@ -135,7 +135,7 @@ export default function ClientTableManager({ boxes }: { boxes: any[] }) {
         if (res.success) {
           toast.success("Đã xóa Box!");
           setEditingBox(null);
-        } else toast.error(res.error);
+        } else toast.error(res.error || "Có lỗi xảy ra");
       });
     }
   };

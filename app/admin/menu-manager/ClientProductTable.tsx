@@ -46,10 +46,10 @@ export default function ClientProductTable({
     startTransition(async () => {
       const result = await deleteProduct(deletingProduct.id);
       if (result.success) {
-        toast.success("Đã xóa vĩnh viễn!");
+        toast.success("Đã xóa món thành công!");
         setDeletingProduct(null); // Tắt modal
       } else {
-        toast.error(result.error);
+        toast.error(result.error || "Không thể xóa món này!"); // <--- ĐÃ SỬA
         setDeletingProduct(null);
       }
     });
@@ -68,10 +68,13 @@ export default function ClientProductTable({
           ) as HTMLInputElement;
           const file = fileInput?.files?.[0];
           if (file) {
-            if (file.size > 2 * 1024 * 1024)
-              return toast.error("Ảnh quá nặng! Chọn ảnh dưới 2MB.");
+            if (file.size > 2 * 1024 * 1024) {
+              // ĐÃ SỬA: Tách toast và return ra 2 dòng để không vướng lỗi Type Check
+              toast.error("Ảnh quá nặng! Chọn ảnh dưới 2MB.");
+              return;
+            }
             const base64Image = await fileToBase64(file);
-            formData.set("image", base64Image); // Vẫn set là "image" để action nhận
+            formData.set("image", base64Image);
           }
         }
 

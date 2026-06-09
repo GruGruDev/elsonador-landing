@@ -73,7 +73,7 @@ export default function ClientUserTable({ users }: { users: any[] }) {
       startTransition(async () => {
         const result = await deleteEmployee(id);
         if (result.success) toast.success("Đã xóa nhân viên");
-        else toast.error(result.error);
+        else toast.error(result.error || "Lỗi cập nhật nhân viên!");
       });
     }
   };
@@ -89,7 +89,7 @@ export default function ClientUserTable({ users }: { users: any[] }) {
         toast.success("Cập nhật thành công!");
         setEditingUser(null); // Tắt Modal
       } else {
-        toast.error(result.error);
+        toast.error(result.error || "Lỗi cập nhật nhân viên!");
       }
     });
   };
