@@ -1,5 +1,6 @@
 "use server";
 
+import { createLog } from "@/lib/log";
 import prisma from "@/lib/prisma";
 
 export async function submitOrder(
@@ -10,7 +11,7 @@ export async function submitOrder(
   phone: string,
 ) {
   try {
-    // 1. Tạo đơn hàng như bình thường
+    // 1. Tạo đơn hàng vào Database với số tiền cuối (đã bao gồm VAT từ Client đẩy lên)
     const newOrder = await prisma.order.create({
       data: {
         tableNumber: tableNumber,
@@ -28,11 +29,21 @@ export async function submitOrder(
       },
     });
 
-    // 2. TÍCH ĐIỂM CRM: Nếu khách có nhập số điện thoại
+    // 📸 GHI LOG CHI TIẾT ĐƠN HÀNG (MINH BẠCH DÒNG THUẾ)
+    const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const itemsListText = cart
+      .map((item) => `${item.quantity}x ${item.product.name}`)
+      .join(", ");
+
+    await createLog(
+      "CUSTOMER_ORDER",
+      `🛒 Đơn gọi món mới tại vị trí [${tableNumber}] | Mã số đơn: #${newOrder.id.slice(-6).toUpperCase()} | Tổng thanh toán (Đã gồm 8% VAT): ${totalAmount.toLocaleString("vi-VN")}đ | Chi tiết (${totalItemsCount} món): ${itemsListText} | Ghi chú khách: ${note || "Không có"}`,
+    );
+
+    // 2. TÍCH ĐIỂM CRM
     if (phone && phone.trim() !== "") {
       const pointsEarned = Math.floor(totalAmount / 10000); // 10.000đ = 1 điểm
 
-      // Lệnh upsert thần thánh: Có SĐT rồi thì cộng điểm, chưa có thì tạo mới
       await prisma.customer.upsert({
         where: { phone: phone.trim() },
         update: {
@@ -41,9 +52,14 @@ export async function submitOrder(
         create: {
           phone: phone.trim(),
           points: pointsEarned,
-          name: "Khách hàng thân thiết", // Tạm để tên mặc định, có thể làm tính năng đổi tên sau
+          name: "Khách hàng thân thiết",
         },
       });
+
+      await createLog(
+        "CRM_POINTS",
+        `✨ CRM: Khách hàng số điện thoại [${phone.trim()}] được cộng tự động +${pointsEarned} điểm thưởng từ hóa đơn #${newOrder.id.slice(-6).toUpperCase()}`,
+      );
     }
 
     return { success: true, orderId: newOrder.id };
