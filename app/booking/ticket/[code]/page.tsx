@@ -27,7 +27,7 @@ export default async function TicketPage({
   // --- CẤU HÌNH NGÂN HÀNG CỦA QUÁN ---
   // Bạn hãy thay đổi các thông tin này bằng tài khoản thật của quán nhé
   const BANK_ID = "MB"; // Mã ngân hàng (VD: MB, VCB, TCB, VIB...)
-  const ACCOUNT_NO = "0123456789"; // Số tài khoản
+  const ACCOUNT_NO = "686856786"; // Số tài khoản
   const ACCOUNT_NAME = "EL SONADOR CAFE"; // Tên chủ tài khoản (viết không dấu)
 
   // Tạo link ảnh VietQR động
