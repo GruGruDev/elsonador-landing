@@ -1,80 +1,92 @@
-Markdown
+# 🌙 El Soñador - Coffee & Sleep Box Management System
 
-# ☕🛌 El Soñador Coffee & Sleep Box
+![Next.js](https://img.shields.io/badge/Next.js-16.2.7-black?style=flat&logo=next.js)
+![Prisma](https://img.shields.io/badge/Prisma-5.14.0-1B222D?style=flat&logo=prisma)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-336791?style=flat&logo=postgresql)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript)
 
-> Hệ thống Quản trị O2O (Online-to-Offline) toàn diện dành cho mô hình Cafe & Sleep Box 24/7 tại Đà Lạt.
+Hệ thống quản lý vận hành toàn diện dành riêng cho mô hình kinh doanh **Cafe kết hợp Không gian làm việc & Sleep Box (El Soñador)**. Hệ thống bao gồm phân hệ Đặt chỗ trực tuyến, Gọi món tại bàn qua QR Code và Bảng điều khiển Quản trị (Admin Dashboard) tối ưu nghiệp vụ.
 
-**Code by GruGruDev** 🚀
+## 🚀 Tính năng nổi bật
 
----
+### Dành cho Khách hàng (Client)
+* 🛒 **Menu F&B thông minh:** Đặt món tại bàn qua mã QR, giỏ hàng tự động bóc tách và tính toán Thuế VAT 8%.
+* 🛌 **Booking Sleep Box:** Đặt chỗ trực tuyến với các tùy chọn linh hoạt theo gói Combo (Gói uống nước 5h, Combo Qua đêm 12h, Combo 24h).
+* 💳 **Thanh toán:** Tích hợp tạo mã VietQR tự động theo số tiền của Gói/Đơn hàng.
 
-## 🌟 Giới thiệu Dự án
+### Dành cho Quản lý & Nhân viên (Admin)
+* 🗺️ **Sơ đồ Không gian (Table Manager):** Theo dõi trạng thái thực tế của Box/Bàn (Trống, Có khách, Đang dọn dẹp, Bảo trì sửa chữa) với đồng hồ tính giờ Live-Timer.
+* 🍔 **Quản lý Menu:** Thêm/Sửa/Xóa đồ uống, dịch vụ. Tự động chuyển đổi ảnh tải lên thành Base64 hoặc dùng Link. Bật/Tắt trạng thái "Hết hàng" bằng 1 click.
+* 👨‍🍳 **Quầy Bar (Order Manager):** Nhận thông báo đơn hàng theo thời gian thực (Real-time), duyệt đơn và hoàn thành món.
+* 👥 **Quản lý CRM & Nhân viên:** Tự động tích điểm cho khách hàng qua số điện thoại, phân quyền hệ thống (Admin/Staff).
+* 📝 **System Logs:** Ghi vết mọi hành động của nhân viên và khách hàng trên hệ thống để dễ dàng đối soát.
 
-El Soñador là một giải pháp Web Application Full-stack được thiết kế để giải quyết toàn bộ bài toán vận hành của một quán Cafe kết hợp Sleep Box. Dự án không chỉ là một Landing Page giới thiệu, mà còn tích hợp sâu các nghiệp vụ: Đặt phòng, Gọi món tại bàn, Màn hình Quầy Bar (KDS), Tích điểm thành viên (CRM) và Báo cáo Doanh thu (Dashboard).
+## 🛠 Công nghệ sử dụng
 
-## ✨ Tính năng Cốt lõi
+* **Framework:** Next.js (App Router, Turbopack)
+* **Ngôn ngữ:** TypeScript
+* **Cơ sở dữ liệu:** PostgreSQL (Lưu trữ trên Supabase)
+* **ORM:** Prisma
+* **Bảo mật:** JWT (Jose), Bcryptjs để mã hóa mật khẩu.
+* **Giao diện:** Tailwind CSS, Lucide React, React Hot Toast.
+* **Triển khai (Deployment):** Ubuntu Server, PM2, Nginx, Let's Encrypt (SSL).
 
-1. **Trải nghiệm Khách hàng (Client-side)**
-   - **Landing Page Chuẩn SEO:** Giao diện hiện đại, tối ưu UX/UI, tích hợp Schema Markup (JSON-LD) cho Local Business & FAQ.
-   - **Hệ thống Booking:** Đặt Sleep Box theo các gói thời gian (combo qua đêm, 24h), quản lý tình trạng phòng.
-   - **Smart Menu & Giỏ hàng:** Khách hàng xem menu, thêm ghi chú riêng cho từng món và chốt đơn trực tiếp tại bàn.
+## ⚙️ Cài đặt môi trường phát triển (Local)
 
-2. **Quản lý Vận hành (Staff & Admin)**
-   - **Màn hình Quầy Bar (KDS):** Quản lý đơn hàng F&B theo thời gian thực (Real-time). Tích hợp âm thanh báo đơn "Ting ting" khi có khách đặt mới.
-   - **Hệ thống CRM Ngầm:** Tự động tạo hồ sơ khách hàng và tích điểm dựa trên số điện thoại nhập lúc gọi món. Phân hạng thành viên (Đồng, Bạc, Vàng).
-   - **Admin Dashboard:** Trực quan hóa dữ liệu tài chính với hệ thống biểu đồ (Recharts). Theo dõi cơ cấu doanh thu, tổng đơn hàng và Top 5 món Bán chạy nhất.
+Yêu cầu hệ thống: `Node.js >= 20`, `Git`.
 
-## 🛠️ Công nghệ Sử dụng (Tech Stack)
-
-- **Framework:** Next.js (App Router), React
-- **Ngôn ngữ:** TypeScript
-- **Styling:** Tailwind CSS
-- **Database ORM:** Prisma
-- **Database:** PostgreSQL (Supabase)
-- **Biểu đồ & UI Components:** Recharts, Lucide React, React Hot Toast
-- **Deployment:** Vercel
-
----
-
-## 🚀 Hướng dẫn Cài đặt & Chạy dự án (Local Development)
-
-### Bước 1: Clone dự án
-
+**1. Clone dự án về máy**
 ```bash
 git clone [https://github.com/GruGruDev/elsonador-landing.git](https://github.com/GruGruDev/elsonador-landing.git)
 cd elsonador-landing
-Bước 2: Cài đặt thư viện
+2. Cài đặt các thư viện (Dependencies)
+
 Bash
 npm install
-Bước 3: Cấu hình Môi trường
-Tạo file .env ở thư mục gốc và thêm chuỗi kết nối Database Supabase của bạn:
+3. Cấu hình biến môi trường
+Tạo file .env ở thư mục gốc và cung cấp các thông số sau:
 
 Đoạn mã
-DATABASE_URL="postgresql://[USER]:[PASSWORD]@[HOST]:5432/postgres"
-Bước 4: Khởi tạo Database & Dữ liệu mẫu (Seed)
+# Chuỗi kết nối đến PostgreSQL (VD: Supabase)
+DATABASE_URL="postgresql://[user]:[password]@[host]:[port]/[db_name]"
+
+# Khóa bí mật để ký JWT Token (Cần tạo một chuỗi ngẫu nhiên, bảo mật)
+SESSION_SECRET="chuoi-ky-tu-bi-mat-cua-ban"
+4. Khởi tạo Cơ sở dữ liệu (Prisma)
+
 Bash
-npx prisma db push
 npx prisma generate
-npx prisma db seed
-Bước 5: Chạy server
+npx prisma db push
+5. Khởi động môi trường phát triển
+
 Bash
 npm run dev
-Mở trình duyệt và truy cập http://localhost:3000.
+Truy cập http://localhost:3000 để xem ứng dụng.
 
-📂 Cấu trúc Thư mục Chính
-/app/page.tsx - Landing Page chính.
+🔑 Khởi tạo tài khoản Admin đầu tiên
+Hệ thống được thiết kế khóa biểu mẫu đăng ký tự do để bảo mật. Để tạo tài khoản Chủ Quán (Super Admin) lần đầu tiên, hãy chạy server và truy cập đường dẫn sau trên trình duyệt:
 
-/app/menu - Phân hệ Gọi món tại bàn.
+👉 http://localhost:3000/api/setup (Hoặc https://[ten-mien-cua-ban]/api/setup nếu đã lên live).
 
-/app/booking - Phân hệ Đặt chỗ Sleep Box.
+Hệ thống sẽ tự động khởi tạo tài khoản Admin mặc định và khóa API này lại.
 
-/app/bar - Màn hình hiển thị cho Quầy pha chế (KDS).
+🌍 Hướng dẫn Triển khai (Production VPS)
+Dự án đã được tối ưu để chạy trên máy chủ VPS Ubuntu.
 
-/app/admin/dashboard - Trang thống kê doanh thu.
+Bash
+# 1. Build dự án
+npm run build
 
-/app/admin/customers - Trang quản lý khách hàng (CRM).
+# 2. Khởi chạy bằng PM2
+pm2 start npm --name "elsonador" -- start
+pm2 startup
+pm2 save
 
-/prisma - Chứa file thiết kế cơ sở dữ liệu (schema.prisma) và dữ liệu mẫu (seed.ts).
+# 3. Cấu hình Nginx Proxy Pass (Điều hướng cổng 80 vào cổng 3000)
+# Xem chi tiết cấu hình tại thư mục cài đặt Nginx (/etc/nginx/sites-available)
+👨‍💻 Tác giả
+Phát triển bởi GruGruDev & Team El Soñador.
+Dự án được thiết kế độc quyền cho mô hình vận hành thực tế của El Soñador.
 
-Phát triển với tất cả đam mê dành cho ngành F&B và Lập trình. Cảm ơn bạn đã ghé thăm!
-```
+Made with ❤️ & ☕ for El Soñador.
